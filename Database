@@ -1,0 +1,145 @@
+-- create a table
+
+CREATE TABLE Person (
+  SSN int,
+  Full_Name varchar(50),
+  Address varchar (50),
+  Phone_Number int,
+  Birthdate date,
+  PRIMARY KEY (SSN)
+);
+-- insert some values
+INSERT INTO Person VALUES (218697432,'John Doe','3806 Dunhill Court','240-362-2421',
+'2001-08-01');
+-- fetch some values
+SELECT * FROM Person;
+
+-- create a table
+CREATE TABLE Doctor (
+  SSN int,
+  Departement char(15),
+  Doctor_ID int,
+  FOREIGN KEY (SSN) REFERENCES Person(SSN)
+);
+-- insert some values
+INSERT INTO Doctor VALUES (217897845,'Cardiology',4300);
+-- fetch some values
+SELECT * FROM Doctor;
+
+-- create a table
+CREATE TABLE Patient (
+  SSN int,
+  Gender char(6),
+  Patient_ID int,
+  FOREIGN KEY (SSN) REFERENCES Person(SSN)
+);
+-- insert some values
+INSERT INTO Patient VALUES (215476829,'Male',2561);
+-- fetch some values
+SELECT * FROM Patient;
+
+
+-- create a table
+CREATE TABLE Nurse (
+  SSN int,
+  Nurse_ID int,
+  FOREIGN KEY (SSN) REFERENCES Person(SSN)
+);
+-- insert some values
+INSERT INTO Nurse VALUES (219352903,6589);
+-- fetch some values
+SELECT * FROM Nurse;
+
+-- create a table
+CREATE TABLE Record (
+  Treatment char(50),
+  Record_No int,
+  Diagonosis char(50)
+);
+-- insert some values
+INSERT INTO Record VALUES ('Meds',56,'Acute Amnesia');
+-- fetch some values
+SELECT * FROM Record;
+
+-- create a table
+CREATE TABLE Administrator (
+  SSN int,
+  Admin_ID int,
+  FOREIGN KEY (SSN) REFERENCES Person(SSN)
+);
+-- insert some values
+INSERT INTO Administrator VALUES (213564789,6589);
+-- fetch some values
+SELECT * FROM Administrator;
+
+-- Queries
+
+
+-- 1
+SELECT Patient.Patient_ID, 
+COUNT(Person.SSN)   
+FROM Person
+LEFT JOIN Patient ON 
+Person.SSN = Patient.SSN
+GROUP BY Patient_ID;
+
+-- 2
+SELECT Person.SSN, Nurse.Nurse_ID
+FROM Person
+LEFT JOIN Nurse ON 
+Person.SSN = Nurse.SSN
+Group BY Person.SSN;
+
+-- 3
+SELECT Person.SSN, Person.Address
+FROM Person
+INNER JOIN Doctor ON Person.SSN=Doctor.SSN
+Order By Person.Address;
+
+-- 4 Persons with the similar names
+SELECT A.Full_Name AS Person1, 
+B.Full_Name AS Person2, A.Address
+FROM Person A, Person B
+WHERE A.SSN <> B.SSN
+AND A.Full_Name = B.Full_Name
+ORDER BY A.SSN;
+
+-- 5 Join 3 tables
+SELECT Person.SSN, Doctor.Doctor_ID,
+Patient.Patient_ID
+FROM ((Person
+INNER JOIN Doctor ON 
+Person.SSN = Doctor.SSN)
+INNER JOIN Patient ON
+Person.SSN = Patient.SSN);
+
+-- 6
+SELECT Person.Full_Name, Doctor.Doctor_ID
+FROM Person
+LEFT JOIN Doctor ON Person.SSN = Doctor.SSN
+ORDER BY Person.Full_Name;
+
+-- 7
+select Departement from Doctor 
+where Doctor_ID='4300';
+
+-- 8 
+select Patient_ID from Patient
+where gender='Male';
+
+-- 9
+UPDATE Administrator
+SET Admin_ID = 4850, 
+SSN= 223456789
+WHERE Admin_ID = 6589;
+ 
+Select * from Administrator;
+
+-- 10
+UPDATE Record
+SET Record_No = 584, 
+Diagonosis= 'Insomnia'
+WHERE Record_No = 56;
+ 
+Select * from Record;
+
